@@ -3,7 +3,16 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
-import { Menu, X, User, LogOut, Calendar, MessageSquare } from "lucide-react";
+import {
+  Menu,
+  X,
+  User,
+  LogOut,
+  Calendar,
+  Globe,
+  ChevronDown,
+} from "lucide-react";
+import { useRouter, usePathname } from "next/navigation";
 
 // دالة للحصول على رابط الصورة الكامل
 const getMediaUrl = (path: string | null): string | null => {
@@ -16,10 +25,55 @@ const getMediaUrl = (path: string | null): string | null => {
   return `${baseUrl}${path}`;
 };
 
+// اللغات المتاحة
+const languages = [
+  { code: "en", name: "English", flag: "🇬🇧" },
+  { code: "ar", name: "العربية", flag: "🇸🇾" },
+  { code: "fr", name: "Français", flag: "🇫🇷" },
+  { code: "tr", name: "Türkçe", flag: "🇹🇷" },
+];
+
 export default function Navbar() {
   const { user, logout, loading } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [showLangMenu, setShowLangMenu] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
+
+  // الحصول على اللغة الحالية من الرابط
+  const getCurrentLocale = () => {
+    const segments = pathname.split("/");
+    const localeInPath = languages.find((lang) => lang.code === segments[1]);
+    return localeInPath ? localeInPath.code : "en";
+  };
+
+  const currentLocale = getCurrentLocale();
+  const currentLanguage =
+    languages.find((lang) => lang.code === currentLocale) || languages[0];
+
+  // دالة لبناء الروابط مع اللغة
+  const localizedHref = (path: string) => {
+    if (path === "/") return `/${currentLocale}`;
+    return `/${currentLocale}${path}`;
+  };
+
+  // تغيير اللغة
+  const switchLanguage = (newLocale: string) => {
+    const segments = pathname.split("/");
+    const isLocaleInPath = languages.some((lang) => lang.code === segments[1]);
+
+    let newPath;
+    if (isLocaleInPath) {
+      segments[1] = newLocale;
+      newPath = segments.join("/");
+    } else {
+      newPath = `/${newLocale}${pathname}`;
+    }
+
+    router.push(newPath);
+    setShowLangMenu(false);
+  };
 
   const navLinks = [
     { href: "/", label: "Home" },
@@ -51,15 +105,68 @@ export default function Navbar() {
     );
   };
 
+  // مكون تغيير اللغة
+  const LanguageSwitcher = ({ mobile = false }: { mobile?: boolean }) => (
+    <div className="relative">
+      <button
+        onClick={() => setShowLangMenu(!showLangMenu)}
+        className={`flex items-center gap-2 ${
+          mobile
+            ? "w-full py-2 text-gray-600 hover:text-primary-600"
+            : "px-3 py-2 rounded-lg hover:bg-gray-100"
+        } transition-colors`}
+      >
+        <Globe className="w-5 h-5 text-gray-600" />
+        <span className="text-sm font-medium">
+          {currentLanguage.flag} {currentLanguage.name}
+        </span>
+        <ChevronDown
+          className={`w-4 h-4 transition-transform ${
+            showLangMenu ? "rotate-180" : ""
+          }`}
+        />
+      </button>
+
+      {showLangMenu && (
+        <>
+          <div
+            className="fixed inset-0 z-10"
+            onClick={() => setShowLangMenu(false)}
+          />
+          <div
+            className={`absolute ${
+              mobile ? "left-0" : "right-0"
+            } mt-2 w-48 bg-white rounded-lg shadow-lg border z-20`}
+          >
+            {languages.map((lang) => (
+              <button
+                key={lang.code}
+                onClick={() => switchLanguage(lang.code)}
+                className={`w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-gray-50 first:rounded-t-lg last:rounded-b-lg transition-colors ${
+                  currentLocale === lang.code
+                    ? "bg-primary-50 text-primary-600"
+                    : ""
+                }`}
+              >
+                <span className="text-xl">{lang.flag}</span>
+                <span className="font-medium">{lang.name}</span>
+              </button>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+
   return (
     <nav className="bg-white shadow-sm sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           {/* Logo */}
           <div className="flex items-center">
-            <Link href="/" className="flex items-center gap-2">
+            <Link href={localizedHref("/")} className="flex items-center gap-2">
               <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-accent-500 rounded-xl flex items-center justify-center">
-                <span className="text-white font-bold text-lg">S</span>
+                <span className="text-white font-bold text-lg">SV</span>
               </div>
               <span className="font-bold text-xl">
                 Syria <span className="text-primary-600">Vision</span>
@@ -68,16 +175,19 @@ export default function Navbar() {
           </div>
 
           {/* Desktop Nav */}
-          <div className="hidden md:flex items-center gap-8">
+          <div className="hidden md:flex items-center gap-6">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
-                href={link.href}
+                href={localizedHref(link.href)}
                 className="text-gray-600 hover:text-primary-600 font-medium transition-colors"
               >
                 {link.label}
               </Link>
             ))}
+
+            {/* Language Switcher */}
+            <LanguageSwitcher />
 
             {loading ? (
               <div className="w-8 h-8 rounded-full bg-gray-200 animate-pulse" />
@@ -118,7 +228,7 @@ export default function Navbar() {
                       </div>
 
                       <Link
-                        href="/profile"
+                        href={localizedHref("/profile")}
                         className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-50"
                         onClick={() => setShowUserMenu(false)}
                       >
@@ -126,7 +236,7 @@ export default function Navbar() {
                         Profile
                       </Link>
                       <Link
-                        href="/my-registrations"
+                        href={localizedHref("/my-registrations")}
                         className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-50"
                         onClick={() => setShowUserMenu(false)}
                       >
@@ -151,12 +261,15 @@ export default function Navbar() {
             ) : (
               <div className="flex items-center gap-4">
                 <Link
-                  href="/login"
+                  href={localizedHref("/login")}
                   className="text-gray-600 hover:text-primary-600 font-medium"
                 >
                   Login
                 </Link>
-                <Link href="/register" className="btn-primary text-sm py-2">
+                <Link
+                  href={localizedHref("/register")}
+                  className="btn-primary text-sm py-2"
+                >
                   Register
                 </Link>
               </div>
@@ -186,13 +299,18 @@ export default function Navbar() {
             {navLinks.map((link) => (
               <Link
                 key={link.href}
-                href={link.href}
+                href={localizedHref(link.href)}
                 className="block text-gray-600 hover:text-primary-600 font-medium py-2"
                 onClick={() => setIsOpen(false)}
               >
                 {link.label}
               </Link>
             ))}
+
+            {/* Language Switcher Mobile */}
+            <div className="py-2">
+              <LanguageSwitcher mobile />
+            </div>
 
             <hr className="my-4" />
 
@@ -210,7 +328,7 @@ export default function Navbar() {
                 </div>
 
                 <Link
-                  href="/profile"
+                  href={localizedHref("/profile")}
                   className="flex items-center gap-2 text-gray-600 hover:text-primary-600 font-medium py-2"
                   onClick={() => setIsOpen(false)}
                 >
@@ -218,7 +336,7 @@ export default function Navbar() {
                   Profile
                 </Link>
                 <Link
-                  href="/my-registrations"
+                  href={localizedHref("/my-registrations")}
                   className="flex items-center gap-2 text-gray-600 hover:text-primary-600 font-medium py-2"
                   onClick={() => setIsOpen(false)}
                 >
@@ -239,14 +357,14 @@ export default function Navbar() {
             ) : (
               <>
                 <Link
-                  href="/login"
+                  href={localizedHref("/login")}
                   className="block text-gray-600 hover:text-primary-600 font-medium py-2"
                   onClick={() => setIsOpen(false)}
                 >
                   Login
                 </Link>
                 <Link
-                  href="/register"
+                  href={localizedHref("/register")}
                   className="block btn-primary text-center"
                   onClick={() => setIsOpen(false)}
                 >

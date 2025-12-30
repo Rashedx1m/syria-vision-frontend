@@ -1,8 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, usePathname } from 'next/navigation';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import { forumAPI } from '@/lib/api';
 import { useAuth } from '@/contexts/AuthContext';
 import { Post, Reply } from '@/types';
@@ -12,6 +13,13 @@ import {
 } from 'lucide-react';
 
 export default function PostDetailPage() {
+  const t = useTranslations('forum');
+  const tCommon = useTranslations('common');
+  const tAuth = useTranslations('auth');
+  const pathname = usePathname();
+  const locale = pathname.split('/')[1] || 'en';
+  const localizedHref = (path: string) => `/${locale}${path}`;
+
   const params = useParams();
   const { user } = useAuth();
   const [post, setPost] = useState<Post | null>(null);
@@ -77,7 +85,7 @@ export default function PostDetailPage() {
   };
 
   const formatDate = (date: string) => {
-    return new Date(date).toLocaleDateString('en-US', {
+    return new Date(date).toLocaleDateString(locale, {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
@@ -119,7 +127,7 @@ export default function PostDetailPage() {
               className="flex items-center gap-1 text-sm text-gray-500 hover:text-primary-600"
             >
               <CornerDownRight className="w-4 h-4" />
-              Reply
+              {t('reply')}
             </button>
           )}
         </div>
@@ -142,9 +150,9 @@ export default function PostDetailPage() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Post not found</h2>
-          <Link href="/forum" className="text-primary-600 hover:underline">
-            Back to forum
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">{t('noPosts')}</h2>
+          <Link href={localizedHref('/forum')} className="text-primary-600 hover:underline">
+            {tCommon('forum')}
           </Link>
         </div>
       </div>
@@ -155,11 +163,11 @@ export default function PostDetailPage() {
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <Link
-          href="/forum"
+          href={localizedHref('/forum')}
           className="inline-flex items-center gap-2 text-gray-600 hover:text-primary-600 mb-6"
         >
           <ArrowLeft className="w-4 h-4" />
-          Back to forum
+          {tCommon('forum')}
         </Link>
 
         {/* Post */}
@@ -172,7 +180,7 @@ export default function PostDetailPage() {
                 color: post.category?.color || '#3B82F6',
               }}
             >
-              {post.category?.name_en || 'General'}
+              {locale === 'ar' ? post.category?.name_ar || post.category?.name_en : post.category?.name_en || 'General'}
             </span>
           </div>
 
@@ -203,11 +211,11 @@ export default function PostDetailPage() {
               }`}
             >
               <ThumbsUp className="w-5 h-5" />
-              {post.likes_count} Likes
+              {post.likes_count} {t('likes')}
             </button>
             <span className="flex items-center gap-2 text-gray-500">
               <MessageSquare className="w-5 h-5" />
-              {post.replies_count} Replies
+              {post.replies_count} {t('replies')}
             </span>
           </div>
         </div>
@@ -216,16 +224,16 @@ export default function PostDetailPage() {
         {user ? (
           <div className="card mb-8">
             <h3 className="font-semibold text-gray-900 mb-4">
-              {replyingTo ? 'Reply to comment' : 'Leave a reply'}
+              {replyingTo ? t('reply') : t('addComment')}
             </h3>
             {replyingTo && (
               <div className="mb-3 text-sm text-gray-500">
-                Replying to a comment{' '}
+                {t('reply')}{' '}
                 <button
                   onClick={() => setReplyingTo(null)}
                   className="text-primary-600 hover:underline"
                 >
-                  Cancel
+                  {tCommon('cancel')}
                 </button>
               </div>
             )}
@@ -233,7 +241,7 @@ export default function PostDetailPage() {
               <textarea
                 className="input flex-grow"
                 rows={3}
-                placeholder="Write your reply..."
+                placeholder={t('writeComment')}
                 value={replyContent}
                 onChange={(e) => setReplyContent(e.target.value)}
                 required
@@ -253,9 +261,9 @@ export default function PostDetailPage() {
           </div>
         ) : (
           <div className="card mb-8 text-center py-8">
-            <p className="text-gray-600 mb-4">Please login to reply</p>
-            <Link href="/login" className="btn-primary">
-              Login
+            <p className="text-gray-600 mb-4">{tAuth('noAccount')}...</p>
+            <Link href={localizedHref('/login')} className="btn-primary">
+              {tAuth('login')}
             </Link>
           </div>
         )}
@@ -263,7 +271,7 @@ export default function PostDetailPage() {
         {/* Replies */}
         <div className="card">
           <h3 className="font-semibold text-gray-900 mb-6">
-            Replies ({post.replies_count})
+            {t('comments')} ({post.replies_count})
           </h3>
           {(post as any).replies?.length > 0 ? (
             <div className="space-y-4">
@@ -272,7 +280,7 @@ export default function PostDetailPage() {
               ))}
             </div>
           ) : (
-            <p className="text-gray-500 text-center py-8">No replies yet. Be the first!</p>
+            <p className="text-gray-500 text-center py-8">{t('noComments')}</p>
           )}
         </div>
       </div>

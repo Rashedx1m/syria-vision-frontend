@@ -2,22 +2,28 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
+import { useTranslations } from 'next-intl';
 import { Mail, Lock, User, Loader2 } from 'lucide-react';
 
 export default function RegisterPage() {
   const router = useRouter();
+  const pathname = usePathname();
   const { register } = useAuth();
+  const t = useTranslations('auth');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [formData, setFormData] = useState({
-    email: '',
     username: '',
+    email: '',
     full_name: '',
     password: '',
     password_confirm: '',
   });
+
+  const locale = pathname.split('/')[1] || 'en';
+  const localizedHref = (path: string) => `/${locale}${path}`;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,7 +38,7 @@ export default function RegisterPage() {
 
     try {
       await register(formData);
-      router.push('/');
+      router.push(`/${locale}/login`);
     } catch (err: any) {
       const errorData = err.response?.data;
       if (errorData) {
@@ -50,8 +56,8 @@ export default function RegisterPage() {
     <div className="min-h-[80vh] flex items-center justify-center py-12 px-4">
       <div className="max-w-md w-full">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Create Account</h1>
-          <p className="text-gray-600 mt-2">Join Syria Vision community</p>
+          <h1 className="text-3xl font-bold text-gray-900">{t('createAccount')}</h1>
+          <p className="text-gray-600 mt-2">{t('joinCommunity')}</p>
         </div>
 
         <div className="card">
@@ -63,27 +69,13 @@ export default function RegisterPage() {
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="label">Full Name</label>
+              <label className="label">{t('username')}</label>
               <div className="relative">
                 <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <input
                   type="text"
                   className="input pl-10"
-                  placeholder="Your full name"
-                  value={formData.full_name}
-                  onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="label">Username</label>
-              <div className="relative">
-                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <input
-                  type="text"
-                  className="input pl-10"
-                  placeholder="username"
+                  placeholder={t('username')}
                   value={formData.username}
                   onChange={(e) => setFormData({ ...formData, username: e.target.value })}
                   required
@@ -92,7 +84,22 @@ export default function RegisterPage() {
             </div>
 
             <div>
-              <label className="label">Email</label>
+              <label className="label">{t('fullName')}</label>
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <input
+                  type="text"
+                  className="input pl-10"
+                  placeholder={t('fullName')}
+                  value={formData.full_name}
+                  onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
+                  required
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="label">{t('email')}</label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <input
@@ -107,7 +114,7 @@ export default function RegisterPage() {
             </div>
 
             <div>
-              <label className="label">Password</label>
+              <label className="label">{t('password')}</label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <input
@@ -123,7 +130,7 @@ export default function RegisterPage() {
             </div>
 
             <div>
-              <label className="label">Confirm Password</label>
+              <label className="label">{t('confirmPassword')}</label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <input
@@ -133,6 +140,7 @@ export default function RegisterPage() {
                   value={formData.password_confirm}
                   onChange={(e) => setFormData({ ...formData, password_confirm: e.target.value })}
                   required
+                  minLength={8}
                 />
               </div>
             </div>
@@ -145,19 +153,23 @@ export default function RegisterPage() {
               {loading ? (
                 <>
                   <Loader2 className="w-5 h-5 animate-spin" />
-                  Creating account...
+                  {t('creatingAccount')}
                 </>
               ) : (
-                'Create Account'
+                t('register')
               )}
             </button>
           </form>
 
+          <p className="text-xs text-gray-500 text-center mt-4">
+            {t('agreeTerms')}
+          </p>
+
           <div className="mt-6 text-center">
             <p className="text-gray-600">
-              Already have an account?{' '}
-              <Link href="/login" className="text-primary-600 font-medium hover:underline">
-                Sign In
+              {t('hasAccount')}{' '}
+              <Link href={localizedHref('/login')} className="text-primary-600 font-medium hover:underline">
+                {t('login')}
               </Link>
             </p>
           </div>

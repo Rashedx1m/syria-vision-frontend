@@ -2,11 +2,18 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { eventsAPI } from '@/lib/api';
 import { Event } from '@/types';
 import { Calendar, MapPin, Users, Award, Loader2 } from 'lucide-react';
 
 export default function EventsPage() {
+  const t = useTranslations('events');
+  const pathname = usePathname();
+  const locale = pathname.split('/')[1] || 'en';
+  const localizedHref = (path: string) => `/${locale}${path}`;
+
   const [events, setEvents] = useState<Event[]>([]);
   const [pastEvents, setPastEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
@@ -37,9 +44,9 @@ export default function EventsPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="section-title">Events</h1>
+          <h1 className="section-title">{t('title')}</h1>
           <p className="section-subtitle">
-            Discover upcoming events and explore our past achievements
+            {t('discoverEvents')}
           </p>
         </div>
 
@@ -54,7 +61,7 @@ export default function EventsPage() {
                   : 'text-gray-600 hover:text-primary-600'
               }`}
             >
-              Upcoming ({events.length})
+              {t('upcoming')} ({events.length})
             </button>
             <button
               onClick={() => setActiveTab('past')}
@@ -64,7 +71,7 @@ export default function EventsPage() {
                   : 'text-gray-600 hover:text-primary-600'
               }`}
             >
-              Past Events ({pastEvents.length})
+              {t('past')} ({pastEvents.length})
             </button>
           </div>
         </div>
@@ -77,14 +84,14 @@ export default function EventsPage() {
         ) : displayEvents.length > 0 ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {displayEvents.map((event) => (
-              <Link key={event.id} href={`/events/${event.id}`}>
+              <Link key={event.id} href={localizedHref(`/events/${event.id}`)}>
                 <div className="card hover:-translate-y-2 cursor-pointer h-full">
                   {/* Cover Image */}
                   <div className="h-48 bg-gradient-to-br from-primary-400 to-accent-400 rounded-xl mb-4 flex items-center justify-center overflow-hidden">
                     {event.cover_image ? (
                       <img
                         src={event.cover_image}
-                        alt={event.title_en}
+                        alt={locale === 'ar' ? event.title_ar || event.title_en : event.title_en}
                         className="w-full h-full object-cover"
                       />
                     ) : (
@@ -107,14 +114,14 @@ export default function EventsPage() {
                     </span>
                     {event.is_featured && (
                       <span className="px-3 py-1 rounded-full text-xs font-medium bg-accent-100 text-accent-700">
-                        Featured
+                        {t('featured')}
                       </span>
                     )}
                   </div>
 
                   {/* Title */}
                   <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                    {event.title_en}
+                    {locale === 'ar' ? event.title_ar || event.title_en : event.title_en}
                   </h3>
 
                   {/* Date & Location */}
@@ -122,10 +129,10 @@ export default function EventsPage() {
                     <div className="flex items-center gap-2 text-gray-600 text-sm">
                       <Calendar className="w-4 h-4" />
                       <span>
-                        {new Date(event.start_date).toLocaleDateString('en-US', {
+                        {new Date(event.start_date).toLocaleDateString(locale, {
                           month: 'short',
                           day: 'numeric',
-                        })} - {new Date(event.end_date).toLocaleDateString('en-US', {
+                        })} - {new Date(event.end_date).toLocaleDateString(locale, {
                           month: 'short',
                           day: 'numeric',
                           year: 'numeric',
@@ -157,12 +164,10 @@ export default function EventsPage() {
           <div className="text-center py-20">
             <Calendar className="w-16 h-16 text-gray-300 mx-auto mb-4" />
             <h3 className="text-xl font-medium text-gray-900 mb-2">
-              No {activeTab} events
+              {activeTab === 'upcoming' ? t('noUpcoming') : t('noPast')}
             </h3>
             <p className="text-gray-500">
-              {activeTab === 'upcoming'
-                ? 'Stay tuned for upcoming events!'
-                : 'No past events to show yet.'}
+              {activeTab === 'upcoming' ? t('stayTuned') : t('noPast')}
             </p>
           </div>
         )}

@@ -218,5 +218,17 @@
     "quickLinks": "Hızlı Bağlantılar",
     "connect": "Bağlan",
     "followUs": "Bizi Takip Edin"
-  }
+  },
+  "contact": {
+  "title": "Bize Ulaşın",
+  "subtitle": "Sorularınız mı var? Sizden haber almak isteriz.",
+  "name": "Adınız",
+  "email": "E-posta Adresi",
+  "subject": "Konu",
+  "message": "Mesajınız",
+  "send": "Mesaj Gönder",
+  "sending": "Gönderiliyor...",
+  "sent": "Mesaj başarıyla gönderildi! En kısa sürede size döneceğiz.",
+  "info": "İletişim Bilgileri"
+}
 }

@@ -218,5 +218,17 @@
     "quickLinks": "Liens rapides",
     "connect": "Connecter",
     "followUs": "Suivez-nous"
-  }
+  },
+  "contact": {
+  "title": "Contactez-nous",
+  "subtitle": "Vous avez des questions? Nous serions ravis de vous entendre.",
+  "name": "Votre Nom",
+  "email": "Adresse Email",
+  "subject": "Sujet",
+  "message": "Votre Message",
+  "send": "Envoyer le Message",
+  "sending": "Envoi en cours...",
+  "sent": "Message envoyé avec succès! Nous vous répondrons bientôt.",
+  "info": "Informations de Contact"
+}
 }

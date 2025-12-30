@@ -6,7 +6,7 @@ import { useTranslations } from 'next-intl';
 import { Mail, Phone, MapPin, Send, Loader2 } from 'lucide-react';
 
 export default function ContactPage() {
-  const t = useTranslations('common');
+  const t = useTranslations('contact');
   const pathname = usePathname();
   const locale = pathname.split('/')[1] || 'en';
   
@@ -31,66 +31,13 @@ export default function ContactPage() {
     }, 1500);
   };
 
-  const content = {
-    en: {
-      title: 'Contact Us',
-      subtitle: 'Have questions? We\'d love to hear from you.',
-      name: 'Your Name',
-      email: 'Email Address',
-      subject: 'Subject',
-      message: 'Your Message',
-      send: 'Send Message',
-      sending: 'Sending...',
-      sent: 'Message sent successfully! We\'ll get back to you soon.',
-      info: 'Contact Information',
-    },
-    ar: {
-      title: 'اتصل بنا',
-      subtitle: 'هل لديك أسئلة؟ يسعدنا سماع رأيك.',
-      name: 'اسمك',
-      email: 'البريد الإلكتروني',
-      subject: 'الموضوع',
-      message: 'رسالتك',
-      send: 'إرسال الرسالة',
-      sending: 'جاري الإرسال...',
-      sent: 'تم إرسال الرسالة بنجاح! سنرد عليك قريباً.',
-      info: 'معلومات الاتصال',
-    },
-    fr: {
-      title: 'Contactez-nous',
-      subtitle: 'Vous avez des questions? Nous serions ravis de vous entendre.',
-      name: 'Votre Nom',
-      email: 'Adresse Email',
-      subject: 'Sujet',
-      message: 'Votre Message',
-      send: 'Envoyer le Message',
-      sending: 'Envoi en cours...',
-      sent: 'Message envoyé avec succès! Nous vous répondrons bientôt.',
-      info: 'Informations de Contact',
-    },
-    tr: {
-      title: 'Bize Ulaşın',
-      subtitle: 'Sorularınız mı var? Sizden haber almak isteriz.',
-      name: 'Adınız',
-      email: 'E-posta Adresi',
-      subject: 'Konu',
-      message: 'Mesajınız',
-      send: 'Mesaj Gönder',
-      sending: 'Gönderiliyor...',
-      sent: 'Mesaj başarıyla gönderildi! En kısa sürede size döneceğiz.',
-      info: 'İletişim Bilgileri',
-    },
-  };
-
-  const c = content[locale as keyof typeof content] || content.en;
-
   return (
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="section-title">{c.title}</h1>
-          <p className="section-subtitle">{c.subtitle}</p>
+          <h1 className="section-title">{t('title')}</h1>
+          <p className="section-subtitle">{t('subtitle')}</p>
         </div>
 
         <div className="grid lg:grid-cols-3 gap-8">
@@ -102,13 +49,13 @@ export default function ContactPage() {
                   <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                     <Send className="w-8 h-8 text-green-600" />
                   </div>
-                  <p className="text-green-600 font-medium">{c.sent}</p>
+                  <p className="text-green-600 font-medium">{t('sent')}</p>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="grid md:grid-cols-2 gap-6">
                     <div>
-                      <label className="label">{c.name}</label>
+                      <label className="label">{t('name')}</label>
                       <input
                         type="text"
                         className="input"
@@ -118,7 +65,7 @@ export default function ContactPage() {
                       />
                     </div>
                     <div>
-                      <label className="label">{c.email}</label>
+                      <label className="label">{t('email')}</label>
                       <input
                         type="email"
                         className="input"
@@ -130,7 +77,7 @@ export default function ContactPage() {
                   </div>
 
                   <div>
-                    <label className="label">{c.subject}</label>
+                    <label className="label">{t('subject')}</label>
                     <input
                       type="text"
                       className="input"
@@ -141,7 +88,7 @@ export default function ContactPage() {
                   </div>
 
                   <div>
-                    <label className="label">{c.message}</label>
+                    <label className="label">{t('message')}</label>
                     <textarea
                       className="input min-h-[150px]"
                       value={formData.message}
@@ -158,12 +105,12 @@ export default function ContactPage() {
                     {loading ? (
                       <>
                         <Loader2 className="w-5 h-5 animate-spin" />
-                        {c.sending}
+                        {t('sending')}
                       </>
                     ) : (
                       <>
                         <Send className="w-5 h-5" />
-                        {c.send}
+                        {t('send')}
                       </>
                     )}
                   </button>
@@ -175,7 +122,7 @@ export default function ContactPage() {
           {/* Contact Info */}
           <div>
             <div className="card">
-              <h3 className="font-semibold text-lg text-gray-900 mb-6">{c.info}</h3>
+              <h3 className="font-semibold text-lg text-gray-900 mb-6">{t('info')}</h3>
               <div className="space-y-4">
                 <div className="flex items-start gap-4">
                   <div className="w-10 h-10 bg-primary-100 rounded-xl flex items-center justify-center flex-shrink-0">

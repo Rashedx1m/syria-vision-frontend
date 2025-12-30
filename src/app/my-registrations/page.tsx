@@ -55,21 +55,21 @@ export default function MyRegistrationsPage() {
       const response = await eventsAPI.getMyRegistrations();
       setRegistrations(response.data.results || response.data || []);
     } catch (err: any) {
-      setError(err.response?.data?.detail || "فشل في جلب التسجيلات");
+      setError(err.response?.data?.detail || "Failed to fetch registrations");
     } finally {
       setLoading(false);
     }
   };
 
   const handleWithdraw = async (registrationId: number) => {
-    if (!confirm("هل أنت متأكد من إلغاء التسجيل؟")) return;
+    if (!confirm("Are you sure you want to cancel this registration?")) return;
 
     setWithdrawing(registrationId);
     try {
       await eventsAPI.withdrawRegistration(registrationId);
       setRegistrations(registrations.filter((r) => r.id !== registrationId));
     } catch (err: any) {
-      setError(err.response?.data?.detail || "فشل في إلغاء التسجيل");
+      setError(err.response?.data?.detail || "Failed to cancel registration");
     } finally {
       setWithdrawing(null);
     }
@@ -81,21 +81,21 @@ export default function MyRegistrationsPage() {
         return (
           <span className="inline-flex items-center gap-1 px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm">
             <CheckCircle className="w-4 h-4" />
-            مقبول
+            Approved
           </span>
         );
       case "pending":
         return (
           <span className="inline-flex items-center gap-1 px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-sm">
             <Clock className="w-4 h-4" />
-            قيد المراجعة
+            Pending
           </span>
         );
       case "rejected":
         return (
           <span className="inline-flex items-center gap-1 px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm">
             <XCircle className="w-4 h-4" />
-            مرفوض
+            Rejected
           </span>
         );
       default:
@@ -108,7 +108,7 @@ export default function MyRegistrationsPage() {
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("ar-SY", {
+    return new Date(dateString).toLocaleDateString("en-US", {
       year: "numeric",
       month: "long",
       day: "numeric",
@@ -128,10 +128,10 @@ export default function MyRegistrationsPage() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-bold text-gray-900">
-            تسجيلاتي في الفعاليات
+            My Event Registrations
           </h1>
           <Link href="/events" className="btn-primary">
-            استعراض الفعاليات
+            Browse Events
           </Link>
         </div>
 
@@ -150,13 +150,13 @@ export default function MyRegistrationsPage() {
           <div className="card text-center py-12">
             <Calendar className="w-16 h-16 text-gray-300 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-gray-900 mb-2">
-              لا توجد تسجيلات
+              No Registrations
             </h3>
             <p className="text-gray-600 mb-6">
-              لم تقم بالتسجيل في أي فعالية بعد
+              You haven't registered for any events yet
             </p>
             <Link href="/events" className="btn-primary inline-block">
-              تصفح الفعاليات
+              Browse Events
             </Link>
           </div>
         ) : (
@@ -164,7 +164,7 @@ export default function MyRegistrationsPage() {
             {registrations.map((registration) => (
               <div key={registration.id} className="card">
                 <div className="flex flex-col md:flex-row gap-6">
-                  {/* صورة الفعالية */}
+                  {/* Event Image */}
                   {registration.event.image && (
                     <div className="md:w-48 h-32 rounded-lg overflow-hidden flex-shrink-0">
                       <img
@@ -175,7 +175,7 @@ export default function MyRegistrationsPage() {
                     </div>
                   )}
 
-                  {/* تفاصيل التسجيل */}
+                  {/* Registration Details */}
                   <div className="flex-1">
                     <div className="flex items-start justify-between mb-3">
                       <h3 className="text-xl font-semibold text-gray-900">
@@ -195,16 +195,16 @@ export default function MyRegistrationsPage() {
                       </div>
                       <div className="flex items-center gap-2">
                         <Users className="w-4 h-4" />
-                        <span>الفريق: {registration.team_name}</span>
+                        <span>Team: {registration.team_name}</span>
                       </div>
                     </div>
 
-                    {/* أعضاء الفريق */}
+                    {/* Team Members */}
                     {registration.team_members &&
                       registration.team_members.length > 0 && (
                         <div className="mb-4">
                           <p className="text-sm text-gray-500 mb-2">
-                            أعضاء الفريق:
+                            Team Members:
                           </p>
                           <div className="flex flex-wrap gap-2">
                             {registration.team_members.map((member, index) => (
@@ -219,14 +219,14 @@ export default function MyRegistrationsPage() {
                         </div>
                       )}
 
-                    {/* الأزرار */}
+                    {/* Action Buttons */}
                     <div className="flex items-center gap-3">
                       <Link
                         href={`/events/${registration.event.id}`}
                         className="inline-flex items-center gap-2 text-primary-600 hover:text-primary-700"
                       >
                         <Eye className="w-4 h-4" />
-                        عرض الفعالية
+                        View Event
                       </Link>
 
                       {registration.status === "pending" && (
@@ -240,16 +240,16 @@ export default function MyRegistrationsPage() {
                           ) : (
                             <Trash2 className="w-4 h-4" />
                           )}
-                          إلغاء التسجيل
+                          Cancel Registration
                         </button>
                       )}
                     </div>
                   </div>
                 </div>
 
-                {/* تاريخ التسجيل */}
+                {/* Registration Date */}
                 <div className="mt-4 pt-4 border-t text-sm text-gray-500">
-                  تم التسجيل في: {formatDate(registration.created_at)}
+                  Registered on: {formatDate(registration.created_at)}
                 </div>
               </div>
             ))}

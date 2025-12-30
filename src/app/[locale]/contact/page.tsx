@@ -4,6 +4,9 @@ import { useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { Mail, Phone, MapPin, Send, Loader2 } from 'lucide-react';
+import axios from 'axios';
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
 
 export default function ContactPage() {
   const t = useTranslations('contact');
@@ -12,6 +15,7 @@ export default function ContactPage() {
   
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
+  const [error, setError] = useState('');
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -22,13 +26,17 @@ export default function ContactPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setError('');
     
-    // Simulate sending
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      await axios.post(`${API_URL}/contact/send/`, formData);
       setSent(true);
       setFormData({ name: '', email: '', subject: '', message: '' });
-    }, 1500);
+    } catch (err: any) {
+      setError(err.response?.data?.detail || 'Failed to send message. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -53,6 +61,12 @@ export default function ContactPage() {
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-6">
+                  {error && (
+                    <div className="bg-red-50 text-red-600 px-4 py-3 rounded-xl">
+                      {error}
+                    </div>
+                  )}
+                  
                   <div className="grid md:grid-cols-2 gap-6">
                     <div>
                       <label className="label">{t('name')}</label>

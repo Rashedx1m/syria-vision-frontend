@@ -6,15 +6,20 @@ import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { forumAPI } from '@/lib/api';
 import { useAuth } from '@/contexts/AuthContext';
-import { 
-  MessageSquare, Plus, User, Calendar, 
-  ThumbsUp, MessageCircle, Loader2, X 
+import {
+  MessageSquare, Plus, User, Calendar,
+  ThumbsUp, MessageCircle, Loader2, X
 } from 'lucide-react';
 
+// ===== تعديل الـ Interface ليطابق API =====
 interface Category {
   id: number;
-  name: string;
-  description: string;
+  name_ar: string;
+  name_en: string;
+  description_ar: string;
+  description_en: string;
+  icon: string;
+  color: string;
   posts_count: number;
 }
 
@@ -39,7 +44,7 @@ export default function ForumPage() {
   const tCommon = useTranslations('common');
   const pathname = usePathname();
   const locale = pathname.split('/')[1] || 'en';
-  
+
   const { user } = useAuth();
   const [categories, setCategories] = useState<Category[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
@@ -49,6 +54,15 @@ export default function ForumPage() {
   const [newPost, setNewPost] = useState({ title: '', content: '', category: '' });
   const [creating, setCreating] = useState(false);
 
+  // ===== دالة مساعدة للحصول على الاسم حسب اللغة =====
+  const getCategoryName = (category: Category) => {
+    return locale === 'ar' ? category.name_ar : category.name_en;
+  };
+
+  const getCategoryDescription = (category: Category) => {
+    return locale === 'ar' ? category.description_ar : category.description_en;
+  };
+
   useEffect(() => {
     fetchData();
   }, [selectedCategory]);
@@ -57,7 +71,7 @@ export default function ForumPage() {
     try {
       const [categoriesRes, postsRes] = await Promise.all([
         forumAPI.getCategories(),
-        selectedCategory 
+        selectedCategory
           ? forumAPI.getCategoryPosts(selectedCategory)
           : forumAPI.getPosts(),
       ]);
@@ -73,7 +87,7 @@ export default function ForumPage() {
   const handleCreatePost = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newPost.title || !newPost.content || !newPost.category) return;
-    
+
     setCreating(true);
     try {
       await forumAPI.createPost({
@@ -144,7 +158,10 @@ export default function ForumPage() {
                         : 'hover:bg-gray-100'
                     }`}
                   >
-                    <span className="block">{category.name}</span>
+                    <span className="flex items-center gap-2">
+                      <span>{category.icon}</span>
+                      <span>{getCategoryName(category)}</span>
+                    </span>
                     <span className="text-xs text-gray-500">{category.posts_count} {t('posts')}</span>
                   </button>
                 ))}
@@ -176,8 +193,8 @@ export default function ForumPage() {
                       <div className="flex items-start gap-4">
                         <div className="w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center overflow-hidden flex-shrink-0">
                           {post.author.avatar ? (
-                            <img 
-                              src={post.author.avatar} 
+                            <img
+                              src={post.author.avatar}
                               alt={post.author.full_name}
                               className="w-full h-full object-cover"
                             />
@@ -199,7 +216,7 @@ export default function ForumPage() {
                               {new Date(post.created_at).toLocaleDateString(locale)}
                             </span>
                             <span className="px-2 py-0.5 bg-gray-100 rounded text-xs">
-                              {post.category.name}
+                              {post.category.icon} {getCategoryName(post.category)}
                             </span>
                           </div>
                         </div>
@@ -259,7 +276,9 @@ export default function ForumPage() {
                 >
                   <option value="">{t('selectCategory')}</option>
                   {categories.map((cat) => (
-                    <option key={cat.id} value={cat.id}>{cat.name}</option>
+                    <option key={cat.id} value={cat.id}>
+                      {cat.icon} {getCategoryName(cat)}
+                    </option>
                   ))}
                 </select>
               </div>

@@ -23,7 +23,8 @@ interface GallerySectionProps {
 const getImageUrl = (path: string) => {
   if (!path) return '';
   if (path.startsWith('http')) return path;
-  return `http://127.0.0.1:8000${path}`;
+  const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://syria-vision-backend-production.up.railway.app';
+  return `${BASE_URL}${path}`;
 };
 
 export default function GallerySection({ 
@@ -41,7 +42,8 @@ export default function GallerySection({
   useEffect(() => {
     const fetchGallery = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:8000/api/events/gallery/');
+        const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://syria-vision-backend-production.up.railway.app/api';
+        const response = await fetch(`${API_URL}/events/gallery/`);
         if (!response.ok) throw new Error('Failed to fetch gallery');
         const data = await response.json();
         // التعامل مع الاستجابة سواء كانت مصفوفة أو كائن يحتوي على results

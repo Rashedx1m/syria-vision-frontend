@@ -1,8 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import { eventsAPI } from '@/lib/api';
 import { useAuth } from '@/contexts/AuthContext';
 import { Event } from '@/types';
@@ -12,8 +13,14 @@ import {
 } from 'lucide-react';
 
 export default function EventDetailPage() {
+  const t = useTranslations('events');
+  const tCommon = useTranslations('common');
   const params = useParams();
   const router = useRouter();
+  const pathname = usePathname();
+  const locale = pathname.split('/')[1] || 'en';
+  const localizedHref = (path: string) => `/${locale}${path}`;
+
   const { user } = useAuth();
   const [event, setEvent] = useState<Event | null>(null);
   const [loading, setLoading] = useState(true);
@@ -25,6 +32,148 @@ export default function EventDetailPage() {
     project_idea: '',
     field: '',
   });
+
+  // Translations for this page
+  const content = {
+    en: {
+      backToEvents: 'Back to events',
+      inPrizes: 'in prizes',
+      aboutEvent: 'About This Event',
+      eventSchedule: 'Event Schedule',
+      day: 'Day',
+      speakers: 'Speakers & Mentors',
+      registration: 'Registration',
+      youRegistered: "You're registered!",
+      team: 'Team',
+      status: 'Status',
+      teamName: 'Team Name',
+      teamMembers: 'Team Members (comma separated)',
+      teamMembersPlaceholder: 'Name 1, Name 2, Name 3',
+      projectIdea: 'Project Idea',
+      field: 'Field',
+      selectField: 'Select field',
+      technology: 'Technology',
+      healthcare: 'Healthcare',
+      education: 'Education',
+      environment: 'Environment',
+      business: 'Business',
+      socialImpact: 'Social Impact',
+      submitRegistration: 'Submit Registration',
+      registering: 'Registering...',
+      cancel: 'Cancel',
+      spotsAvailable: 'Spots Available',
+      teamSize: 'Team Size',
+      members: 'members',
+      deadline: 'Deadline',
+      registerNow: 'Register Now',
+      registrationClosed: 'Registration Closed',
+      eventNotFound: 'Event not found',
+    },
+    ar: {
+      backToEvents: 'العودة للفعاليات',
+      inPrizes: 'جوائز',
+      aboutEvent: 'عن هذه الفعالية',
+      eventSchedule: 'جدول الفعالية',
+      day: 'اليوم',
+      speakers: 'المتحدثون والمرشدون',
+      registration: 'التسجيل',
+      youRegistered: 'أنت مسجل!',
+      team: 'الفريق',
+      status: 'الحالة',
+      teamName: 'اسم الفريق',
+      teamMembers: 'أعضاء الفريق (مفصولين بفاصلة)',
+      teamMembersPlaceholder: 'اسم 1، اسم 2، اسم 3',
+      projectIdea: 'فكرة المشروع',
+      field: 'المجال',
+      selectField: 'اختر المجال',
+      technology: 'التقنية',
+      healthcare: 'الرعاية الصحية',
+      education: 'التعليم',
+      environment: 'البيئة',
+      business: 'الأعمال',
+      socialImpact: 'التأثير الاجتماعي',
+      submitRegistration: 'إرسال التسجيل',
+      registering: 'جاري التسجيل...',
+      cancel: 'إلغاء',
+      spotsAvailable: 'الأماكن المتاحة',
+      teamSize: 'حجم الفريق',
+      members: 'أعضاء',
+      deadline: 'آخر موعد',
+      registerNow: 'سجّل الآن',
+      registrationClosed: 'التسجيل مغلق',
+      eventNotFound: 'الفعالية غير موجودة',
+    },
+    fr: {
+      backToEvents: 'Retour aux événements',
+      inPrizes: 'en prix',
+      aboutEvent: 'À propos de cet événement',
+      eventSchedule: "Programme de l'événement",
+      day: 'Jour',
+      speakers: 'Intervenants et Mentors',
+      registration: 'Inscription',
+      youRegistered: 'Vous êtes inscrit!',
+      team: 'Équipe',
+      status: 'Statut',
+      teamName: "Nom de l'équipe",
+      teamMembers: "Membres de l'équipe (séparés par des virgules)",
+      teamMembersPlaceholder: 'Nom 1, Nom 2, Nom 3',
+      projectIdea: 'Idée du projet',
+      field: 'Domaine',
+      selectField: 'Sélectionner le domaine',
+      technology: 'Technologie',
+      healthcare: 'Santé',
+      education: 'Éducation',
+      environment: 'Environnement',
+      business: 'Business',
+      socialImpact: 'Impact Social',
+      submitRegistration: "Soumettre l'inscription",
+      registering: 'Inscription en cours...',
+      cancel: 'Annuler',
+      spotsAvailable: 'Places disponibles',
+      teamSize: "Taille de l'équipe",
+      members: 'membres',
+      deadline: 'Date limite',
+      registerNow: "S'inscrire maintenant",
+      registrationClosed: 'Inscriptions fermées',
+      eventNotFound: 'Événement non trouvé',
+    },
+    tr: {
+      backToEvents: 'Etkinliklere dön',
+      inPrizes: 'ödül',
+      aboutEvent: 'Bu Etkinlik Hakkında',
+      eventSchedule: 'Etkinlik Programı',
+      day: 'Gün',
+      speakers: 'Konuşmacılar ve Mentorlar',
+      registration: 'Kayıt',
+      youRegistered: 'Kayıtlısınız!',
+      team: 'Takım',
+      status: 'Durum',
+      teamName: 'Takım Adı',
+      teamMembers: 'Takım Üyeleri (virgülle ayırın)',
+      teamMembersPlaceholder: 'İsim 1, İsim 2, İsim 3',
+      projectIdea: 'Proje Fikri',
+      field: 'Alan',
+      selectField: 'Alan seçin',
+      technology: 'Teknoloji',
+      healthcare: 'Sağlık',
+      education: 'Eğitim',
+      environment: 'Çevre',
+      business: 'İş',
+      socialImpact: 'Sosyal Etki',
+      submitRegistration: 'Kaydı Gönder',
+      registering: 'Kaydediliyor...',
+      cancel: 'İptal',
+      spotsAvailable: 'Mevcut Yerler',
+      teamSize: 'Takım Boyutu',
+      members: 'üye',
+      deadline: 'Son Tarih',
+      registerNow: 'Şimdi Kaydol',
+      registrationClosed: 'Kayıtlar Kapalı',
+      eventNotFound: 'Etkinlik bulunamadı',
+    },
+  };
+
+  const c = content[locale as keyof typeof content] || content.en;
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -43,7 +192,7 @@ export default function EventDetailPage() {
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) {
-      router.push('/login');
+      router.push(localizedHref('/login'));
       return;
     }
 
@@ -73,6 +222,19 @@ export default function EventDetailPage() {
     }
   };
 
+  // Get localized event title and description
+  const getEventTitle = () => {
+    if (!event) return '';
+    if (locale === 'ar' && event.title_ar) return event.title_ar;
+    return event.title_en;
+  };
+
+  const getEventDescription = () => {
+    if (!event) return '';
+    if (locale === 'ar' && event.description_ar) return event.description_ar;
+    return event.description_en;
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -85,9 +247,9 @@ export default function EventDetailPage() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Event not found</h2>
-          <Link href="/events" className="text-primary-600 hover:underline">
-            Back to events
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">{c.eventNotFound}</h2>
+          <Link href={localizedHref('/events')} className="text-primary-600 hover:underline">
+            {c.backToEvents}
           </Link>
         </div>
       </div>
@@ -100,11 +262,11 @@ export default function EventDetailPage() {
       <div className="bg-gradient-to-r from-primary-600 to-primary-700 text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Link
-            href="/events"
+            href={localizedHref('/events')}
             className="inline-flex items-center gap-2 text-primary-100 hover:text-white mb-6"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back to events
+            {c.backToEvents}
           </Link>
 
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
@@ -118,11 +280,11 @@ export default function EventDetailPage() {
               >
                 {event.status.charAt(0).toUpperCase() + event.status.slice(1)}
               </span>
-              <h1 className="text-3xl md:text-4xl font-bold mb-4">{event.title_en}</h1>
+              <h1 className="text-3xl md:text-4xl font-bold mb-4">{getEventTitle()}</h1>
               <div className="flex flex-wrap gap-4 text-primary-100">
                 <span className="flex items-center gap-2">
                   <Calendar className="w-5 h-5" />
-                  {new Date(event.start_date).toLocaleDateString('en-US', {
+                  {new Date(event.start_date).toLocaleDateString(locale, {
                     month: 'long',
                     day: 'numeric',
                     year: 'numeric',
@@ -138,7 +300,7 @@ export default function EventDetailPage() {
             <div className="bg-white/10 backdrop-blur rounded-2xl p-6">
               <div className="text-center">
                 <div className="text-3xl font-bold">{event.total_prize}</div>
-                <div className="text-primary-100">{event.prize_currency} in prizes</div>
+                <div className="text-primary-100">{event.prize_currency} {c.inPrizes}</div>
               </div>
             </div>
           </div>
@@ -151,16 +313,16 @@ export default function EventDetailPage() {
           <div className="lg:col-span-2 space-y-8">
             {/* Description */}
             <div className="card">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">About This Event</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">{c.aboutEvent}</h2>
               <p className="text-gray-600 leading-relaxed whitespace-pre-line">
-                {event.description_en}
+                {getEventDescription()}
               </p>
             </div>
 
             {/* Schedule */}
             {event.schedule && event.schedule.length > 0 && (
               <div className="card">
-                <h2 className="text-xl font-semibold text-gray-900 mb-6">Event Schedule</h2>
+                <h2 className="text-xl font-semibold text-gray-900 mb-6">{c.eventSchedule}</h2>
                 <div className="space-y-4">
                   {event.schedule.map((item) => (
                     <div
@@ -168,14 +330,18 @@ export default function EventDetailPage() {
                       className="flex gap-4 p-4 bg-gray-50 rounded-xl"
                     >
                       <div className="flex-shrink-0 w-16 text-center">
-                        <div className="text-sm text-primary-600 font-medium">Day {item.day}</div>
+                        <div className="text-sm text-primary-600 font-medium">{c.day} {item.day}</div>
                         <div className="text-xs text-gray-500">
                           {item.start_time} - {item.end_time}
                         </div>
                       </div>
                       <div>
-                        <h3 className="font-medium text-gray-900">{item.title_en}</h3>
-                        <p className="text-sm text-gray-600">{item.description_en}</p>
+                        <h3 className="font-medium text-gray-900">
+                          {locale === 'ar' && item.title_ar ? item.title_ar : item.title_en}
+                        </h3>
+                        <p className="text-sm text-gray-600">
+                          {locale === 'ar' && item.description_ar ? item.description_ar : item.description_en}
+                        </p>
                       </div>
                     </div>
                   ))}
@@ -186,7 +352,7 @@ export default function EventDetailPage() {
             {/* Speakers */}
             {event.speakers && event.speakers.length > 0 && (
               <div className="card">
-                <h2 className="text-xl font-semibold text-gray-900 mb-6">Speakers & Mentors</h2>
+                <h2 className="text-xl font-semibold text-gray-900 mb-6">{c.speakers}</h2>
                 <div className="grid md:grid-cols-2 gap-6">
                   {event.speakers.map((speaker) => (
                     <div key={speaker.id} className="flex gap-4">
@@ -228,23 +394,23 @@ export default function EventDetailPage() {
           <div className="space-y-6">
             {/* Registration Card */}
             <div className="card sticky top-24">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Registration</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">{c.registration}</h3>
 
               {event.user_registration ? (
                 <div className="text-center py-6">
                   <CheckCircle className="w-12 h-12 text-green-500 mx-auto mb-3" />
-                  <p className="font-medium text-gray-900">You're registered!</p>
+                  <p className="font-medium text-gray-900">{c.youRegistered}</p>
                   <p className="text-sm text-gray-600 mt-1">
-                    Team: {event.user_registration.team_name}
+                    {c.team}: {event.user_registration.team_name}
                   </p>
                   <p className="text-sm text-gray-600">
-                    Status: <span className="capitalize">{event.user_registration.status}</span>
+                    {c.status}: <span className="capitalize">{event.user_registration.status}</span>
                   </p>
                 </div>
               ) : showRegisterForm ? (
                 <form onSubmit={handleRegister} className="space-y-4">
                   <div>
-                    <label className="label">Team Name</label>
+                    <label className="label">{c.teamName}</label>
                     <input
                       type="text"
                       className="input"
@@ -254,17 +420,17 @@ export default function EventDetailPage() {
                     />
                   </div>
                   <div>
-                    <label className="label">Team Members (comma separated)</label>
+                    <label className="label">{c.teamMembers}</label>
                     <input
                       type="text"
                       className="input"
-                      placeholder="Name 1, Name 2, Name 3"
+                      placeholder={c.teamMembersPlaceholder}
                       value={formData.team_members}
                       onChange={(e) => setFormData({ ...formData, team_members: e.target.value })}
                     />
                   </div>
                   <div>
-                    <label className="label">Project Idea</label>
+                    <label className="label">{c.projectIdea}</label>
                     <textarea
                       className="input"
                       rows={3}
@@ -273,19 +439,19 @@ export default function EventDetailPage() {
                     />
                   </div>
                   <div>
-                    <label className="label">Field</label>
+                    <label className="label">{c.field}</label>
                     <select
                       className="input"
                       value={formData.field}
                       onChange={(e) => setFormData({ ...formData, field: e.target.value })}
                     >
-                      <option value="">Select field</option>
-                      <option value="tech">Technology</option>
-                      <option value="health">Healthcare</option>
-                      <option value="education">Education</option>
-                      <option value="environment">Environment</option>
-                      <option value="business">Business</option>
-                      <option value="social">Social Impact</option>
+                      <option value="">{c.selectField}</option>
+                      <option value="tech">{c.technology}</option>
+                      <option value="health">{c.healthcare}</option>
+                      <option value="education">{c.education}</option>
+                      <option value="environment">{c.environment}</option>
+                      <option value="business">{c.business}</option>
+                      <option value="social">{c.socialImpact}</option>
                     </select>
                   </div>
                   <button
@@ -293,45 +459,45 @@ export default function EventDetailPage() {
                     disabled={registering}
                     className="btn-primary w-full"
                   >
-                    {registering ? 'Registering...' : 'Submit Registration'}
+                    {registering ? c.registering : c.submitRegistration}
                   </button>
                   <button
                     type="button"
                     onClick={() => setShowRegisterForm(false)}
                     className="btn-secondary w-full"
                   >
-                    Cancel
+                    {c.cancel}
                   </button>
                 </form>
               ) : (
                 <>
                   <div className="space-y-3 mb-6">
                     <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">Spots Available</span>
+                      <span className="text-gray-600">{c.spotsAvailable}</span>
                       <span className="font-medium">{event.available_spots} / {event.max_participants}</span>
                     </div>
                     <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">Team Size</span>
-                      <span className="font-medium">{event.min_team_size} - {event.max_team_size} members</span>
+                      <span className="text-gray-600">{c.teamSize}</span>
+                      <span className="font-medium">{event.min_team_size} - {event.max_team_size} {c.members}</span>
                     </div>
                     <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">Deadline</span>
+                      <span className="text-gray-600">{c.deadline}</span>
                       <span className="font-medium">
-                        {new Date(event.registration_deadline).toLocaleDateString()}
+                        {new Date(event.registration_deadline).toLocaleDateString(locale)}
                       </span>
                     </div>
                   </div>
 
                   {event.is_registration_open ? (
                     <button
-                      onClick={() => user ? setShowRegisterForm(true) : router.push('/login')}
+                      onClick={() => user ? setShowRegisterForm(true) : router.push(localizedHref('/login'))}
                       className="btn-primary w-full"
                     >
-                      Register Now
+                      {c.registerNow}
                     </button>
                   ) : (
                     <button disabled className="btn-secondary w-full opacity-50 cursor-not-allowed">
-                      Registration Closed
+                      {c.registrationClosed}
                     </button>
                   )}
                 </>

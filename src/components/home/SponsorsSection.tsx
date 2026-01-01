@@ -1,172 +1,108 @@
 'use client';
 
-import Link from 'next/link';
-import { Building2 } from 'lucide-react';
+import Image from 'next/image';
 
 // ===== نوع الراعي =====
 export interface Sponsor {
   id: number;
   name: string;
   logo: string;
-  website: string;
-  tier: 'platinum' | 'gold' | 'silver';
 }
 
 // ===== أنواع الخصائص =====
 interface SponsorsSectionProps {
   locale: string;
-  localizedHref: (path: string) => string;
   sponsors?: Sponsor[];
 }
 
 // ===== البيانات الافتراضية للرعاة =====
+// ضع الشعارات في مجلد: public/sponsors/
 const defaultSponsors: Sponsor[] = [
-  { id: 1, name: 'Tech Company', logo: 'https://images.unsplash.com/photo-1599305445671-ac291c95aaa9?w=200', website: 'https://example.com', tier: 'platinum' },
-  { id: 2, name: 'Innovation Bank', logo: 'https://images.unsplash.com/photo-1599305445671-ac291c95aaa9?w=200', website: 'https://example.com', tier: 'platinum' },
-  { id: 3, name: 'Future Group', logo: 'https://images.unsplash.com/photo-1599305445671-ac291c95aaa9?w=200', website: 'https://example.com', tier: 'gold' },
-  { id: 4, name: 'Solutions Co.', logo: 'https://images.unsplash.com/photo-1599305445671-ac291c95aaa9?w=200', website: 'https://example.com', tier: 'gold' },
-  { id: 5, name: 'Development Foundation', logo: 'https://images.unsplash.com/photo-1599305445671-ac291c95aaa9?w=200', website: 'https://example.com', tier: 'silver' },
-  { id: 6, name: 'Software Inc.', logo: 'https://images.unsplash.com/photo-1599305445671-ac291c95aaa9?w=200', website: 'https://example.com', tier: 'silver' },
+  { id: 1, name: 'Tech Company', logo: '/sponsors/claude.svg' },
+  { id: 2, name: 'Innovation Bank', logo: '/sponsors/adobe-icon.svg' },
+  { id: 3, name: 'Future Group', logo: '/sponsors/apidog.svg' },
+  { id: 4, name: 'Solutions Co.', logo: '/sponsors/async-api-icon.svg' },
+  { id: 5, name: 'Development Foundation', logo: '/sponsors/claude-icon.svg' },
+  { id: 6, name: 'Software Inc.', logo: '/sponsors/daisyUI-icon.svg' },
+   { id: 7, name: 'Software Inc.', logo: '/sponsors/effector.svg' },
+    { id: 8, name: 'Software Inc.', logo: '/sponsors/faker.svg' },
+     { id: 9, name: 'Software Inc.', logo: '/sponsors/fastapi.svg' },
+      { id: 10, name: 'Software Inc.', logo: '/sponsors/gradio-icon.svg' },
+       { id: 11, name: 'Software Inc.', logo: '/sponsors/importio-icon.svg' },
+        { id: 12, name: 'Software Inc.', logo: '/sponsors/internet-computer-icon.svg' },
+         { id: 13, name: 'Software Inc.', logo: '/sponsors/meta-icon.svg' },
+         { id: 14, name: 'Software Inc.', logo: '/sponsors/obsidian-icon.svg' },
+         { id: 15, name: 'Software Inc.', logo: '/sponsors/okta-icon.svg' },
+         { id: 16, name: 'Software Inc.', logo: '/sponsors/perplexity.svg' },
+         { id: 17, name: 'Software Inc.', logo: '/sponsors/replay-icon.svg' },
+         { id: 18, name: 'Software Inc.', logo: '/sponsors/sonarlint-icon.svg' },
+         { id: 19, name: 'Software Inc.', logo: '/sponsors/tor-browser.svg' },
+         { id: 20, name: 'Software Inc.', logo: '/sponsors/waypoint-icon.svg' },
+         { id: 21, name: 'Software Inc.', logo: '/sponsors/x.svg' },
+         { id: 22, name: 'Software Inc.', logo: '/sponsors/zoho.svg' },
+         
 ];
 
 export default function SponsorsSection({ 
   locale, 
-  localizedHref,
   sponsors = defaultSponsors 
 }: SponsorsSectionProps) {
-  // ===== تصنيف الرعاة حسب المستوى =====
-  const platinumSponsors = sponsors.filter(s => s.tier === 'platinum');
-  const goldSponsors = sponsors.filter(s => s.tier === 'gold');
-  const silverSponsors = sponsors.filter(s => s.tier === 'silver');
-
   return (
-    <section className="py-20 bg-gray-50">
+    <section className="py-16 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* عنوان القسم */}
-        <div className="text-center mb-16">
-          <span className="inline-block px-4 py-2 bg-primary-100 text-primary-700 rounded-full font-medium mb-4">
-            {locale === 'ar' ? 'شركاؤنا' : 'Our Partners'}
-          </span>
-          <h2 className="section-title">
-            {locale === 'ar' ? 'الشركات الداعمة' : 'Our Sponsors'}
-          </h2>
-          <p className="section-subtitle max-w-2xl mx-auto">
-            {locale === 'ar' 
-              ? 'نفتخر بشراكتنا مع هذه المؤسسات الرائدة'
-              : 'We are proud to partner with these leading organizations'}
+        <div className="text-center mb-12">
+          <p className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-2">
+            {locale === 'ar' ? 'شركاؤنا في النجاح' : 'Trusted By'}
           </p>
+          <h2 className="text-2xl font-semibold text-gray-900">
+            {locale === 'ar' ? 'الشركات الداعمة' : 'Our Partners'}
+          </h2>
         </div>
 
-        {/* الرعاة البلاتينيون */}
-        {platinumSponsors.length > 0 && (
-          <SponsorTier
-            title={locale === 'ar' ? 'الرعاة البلاتينيون' : 'Platinum Sponsors'}
-            sponsors={platinumSponsors}
-            size="large"
-            showIcon
-          />
-        )}
-
-        {/* الرعاة الذهبيون */}
-        {goldSponsors.length > 0 && (
-          <SponsorTier
-            title={locale === 'ar' ? 'الرعاة الذهبيون' : 'Gold Sponsors'}
-            sponsors={goldSponsors}
-            size="medium"
-          />
-        )}
-
-        {/* الرعاة الفضيون */}
-        {silverSponsors.length > 0 && (
-          <SponsorTier
-            title={locale === 'ar' ? 'الرعاة الفضيون' : 'Silver Sponsors'}
-            sponsors={silverSponsors}
-            size="small"
-          />
-        )}
-
-        {/* دعوة للشراكة */}
-        <div className="text-center mt-12">
-          <p className="text-gray-600 mb-4">
-            {locale === 'ar' 
-              ? 'هل تريد أن تكون شريكاً في نجاحنا؟'
-              : 'Want to become a partner in our success?'}
-          </p>
-          <Link href={localizedHref('/contact')} className="btn-secondary">
-            {locale === 'ar' ? 'تواصل معنا' : 'Contact Us'}
-          </Link>
+        {/* شريط الرعاة المتحرك */}
+        <div className="relative overflow-hidden group">
+          {/* تأثير التلاشي على الأطراف */}
+          <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
+          <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
+          
+          {/* الشريط المتحرك */}
+          <div className="flex animate-marquee group-hover:[animation-play-state:paused]">
+            {/* المجموعة الأولى */}
+            {sponsors.map((sponsor) => (
+              <div
+                key={sponsor.id}
+                className="flex-shrink-0 mx-8 flex items-center justify-center"
+              >
+                <div className="w-32 h-16 relative grayscale hover:grayscale-0 opacity-60 hover:opacity-100 transition-all duration-300">
+                  <Image
+                    src={sponsor.logo}
+                    alt={sponsor.name}
+                    fill
+                    className="object-contain"
+                  />
+                </div>
+              </div>
+            ))}
+            {/* المجموعة المكررة للتمرير المستمر */}
+            {sponsors.map((sponsor) => (
+              <div
+                key={`dup-${sponsor.id}`}
+                className="flex-shrink-0 mx-8 flex items-center justify-center"
+              >
+                <div className="w-32 h-16 relative grayscale hover:grayscale-0 opacity-60 hover:opacity-100 transition-all duration-300">
+                  <Image
+                    src={sponsor.logo}
+                    alt={sponsor.name}
+                    fill
+                    className="object-contain"
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>
-  );
-}
-
-// ===== مكون مستوى الرعاية =====
-function SponsorTier({ 
-  title, 
-  sponsors, 
-  size,
-  showIcon = false
-}: { 
-  title: string; 
-  sponsors: Sponsor[]; 
-  size: 'large' | 'medium' | 'small';
-  showIcon?: boolean;
-}) {
-  // ===== تحديد أحجام البطاقات =====
-  const sizeClasses = {
-    large: 'w-48 h-24 p-4',
-    medium: 'w-40 h-20 p-3',
-    small: 'w-32 h-16 p-2',
-  };
-
-  const gapClasses = {
-    large: 'gap-8',
-    medium: 'gap-6',
-    small: 'gap-4',
-  };
-
-  return (
-    <div className="mb-12">
-      <h3 className="text-center text-lg font-semibold text-gray-500 mb-6 flex items-center justify-center gap-2">
-        {showIcon && <Building2 className="w-5 h-5" />}
-        {title}
-      </h3>
-      <div className={`flex flex-wrap justify-center ${gapClasses[size]}`}>
-        {sponsors.map((sponsor) => (
-          <SponsorCard 
-            key={sponsor.id} 
-            sponsor={sponsor} 
-            sizeClass={sizeClasses[size]}
-          />
-        ))}
-      </div>
-    </div>
-  );
-}
-
-// ===== مكون بطاقة الراعي =====
-function SponsorCard({ 
-  sponsor, 
-  sizeClass 
-}: { 
-  sponsor: Sponsor; 
-  sizeClass: string;
-}) {
-  return (
-    <a
-      href={sponsor.website}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="group"
-    >
-      <div className={`${sizeClass} bg-white rounded-xl shadow-md flex items-center justify-center border-2 border-transparent hover:border-primary-200 transition-all hover:shadow-lg`}>
-        <img
-          src={sponsor.logo}
-          alt={sponsor.name}
-          className="max-w-full max-h-full object-contain grayscale group-hover:grayscale-0 transition-all"
-        />
-      </div>
-    </a>
   );
 }

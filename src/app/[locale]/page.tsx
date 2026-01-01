@@ -92,7 +92,7 @@ export default function HomePage() {
       {/* قسم الشركات الداعمة - Sponsors Section */}
       <SponsorsSection
         locale={locale}
-        localizedHref={localizedHref}
+       
       />
 
       {/* قسم الدعوة للعمل - CTA Section */}

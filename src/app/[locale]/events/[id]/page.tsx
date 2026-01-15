@@ -102,75 +102,7 @@ export default function EventDetailPage() {
       registerNow: 'سجّل الآن',
       registrationClosed: 'التسجيل مغلق',
       eventNotFound: 'الفعالية غير موجودة',
-    },
-    fr: {
-      backToEvents: 'Retour aux événements',
-      inPrizes: 'en prix',
-      aboutEvent: 'À propos de cet événement',
-      eventSchedule: "Programme de l'événement",
-      day: 'Jour',
-      speakers: 'Intervenants et Mentors',
-      registration: 'Inscription',
-      youRegistered: 'Vous êtes inscrit!',
-      team: 'Équipe',
-      status: 'Statut',
-      teamName: "Nom de l'équipe",
-      teamMembers: "Membres de l'équipe (séparés par des virgules)",
-      teamMembersPlaceholder: 'Nom 1, Nom 2, Nom 3',
-      projectIdea: 'Idée du projet',
-      field: 'Domaine',
-      selectField: 'Sélectionner le domaine',
-      technology: 'Technologie',
-      healthcare: 'Santé',
-      education: 'Éducation',
-      environment: 'Environnement',
-      business: 'Business',
-      socialImpact: 'Impact Social',
-      submitRegistration: "Soumettre l'inscription",
-      registering: 'Inscription en cours...',
-      cancel: 'Annuler',
-      spotsAvailable: 'Places disponibles',
-      teamSize: "Taille de l'équipe",
-      members: 'membres',
-      deadline: 'Date limite',
-      registerNow: "S'inscrire maintenant",
-      registrationClosed: 'Inscriptions fermées',
-      eventNotFound: 'Événement non trouvé',
-    },
-    tr: {
-      backToEvents: 'Etkinliklere dön',
-      inPrizes: 'ödül',
-      aboutEvent: 'Bu Etkinlik Hakkında',
-      eventSchedule: 'Etkinlik Programı',
-      day: 'Gün',
-      speakers: 'Konuşmacılar ve Mentorlar',
-      registration: 'Kayıt',
-      youRegistered: 'Kayıtlısınız!',
-      team: 'Takım',
-      status: 'Durum',
-      teamName: 'Takım Adı',
-      teamMembers: 'Takım Üyeleri (virgülle ayırın)',
-      teamMembersPlaceholder: 'İsim 1, İsim 2, İsim 3',
-      projectIdea: 'Proje Fikri',
-      field: 'Alan',
-      selectField: 'Alan seçin',
-      technology: 'Teknoloji',
-      healthcare: 'Sağlık',
-      education: 'Eğitim',
-      environment: 'Çevre',
-      business: 'İş',
-      socialImpact: 'Sosyal Etki',
-      submitRegistration: 'Kaydı Gönder',
-      registering: 'Kaydediliyor...',
-      cancel: 'İptal',
-      spotsAvailable: 'Mevcut Yerler',
-      teamSize: 'Takım Boyutu',
-      members: 'üye',
-      deadline: 'Son Tarih',
-      registerNow: 'Şimdi Kaydol',
-      registrationClosed: 'Kayıtlar Kapalı',
-      eventNotFound: 'Etkinlik bulunamadı',
-    },
+    }
   };
 
   const c = content[locale as keyof typeof content] || content.en;
@@ -473,13 +405,13 @@ export default function EventDetailPage() {
                 <>
                   <div className="space-y-3 mb-6">
                     <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">{c.spotsAvailable}</span>
-                      <span className="font-medium">{event.available_spots} / {event.max_participants}</span>
+                      {/* <span className="text-gray-600">{c.spotsAvailable}</span> */}
+                      {/* <span className="font-medium">{event.available_spots} / {event.max_participants}</span> */}
                     </div>
-                    <div className="flex justify-between text-sm">
+                    {/* <div className="flex justify-between text-sm">
                       <span className="text-gray-600">{c.teamSize}</span>
                       <span className="font-medium">{event.min_team_size} - {event.max_team_size} {c.members}</span>
-                    </div>
+                    </div> */}
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-600">{c.deadline}</span>
                       <span className="font-medium">
